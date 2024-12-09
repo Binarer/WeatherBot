@@ -7,20 +7,17 @@ import easy.weatherbot.App.Domain.Services.SessionService.SessionService;
 import easy.weatherbot.App.Domain.Services.WeatherService.WeatherService;
 import easy.weatherbot.App.Infrastructure.Components.Keyboard.KeyboardUtils.KeyboardUtils;
 import easy.weatherbot.App.Infrastructure.Components.MessageUtil.MessageUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import java.util.List;
+
 @Component
+@RequiredArgsConstructor
 public class WeatherCommands {
     private final WeatherService weatherService;
     private final SessionService sessionService;
-
-    @Autowired
-    public WeatherCommands(WeatherService weatherService, SessionService sessionService) {
-        this.weatherService = weatherService;
-        this.sessionService = sessionService;
-    }
 
     public SendMessage handleWeather(UserSession session) {
         session.setState(UserState.ENTERING_CITY);
@@ -33,14 +30,14 @@ public class WeatherCommands {
     }
 
     public SendMessage handleHistory(UserSession session) {
-        String history = session.getCityHistory().isEmpty()
+        List<CityHistory> cityHistory = sessionService.getCityHistory(session.getChatId());
+        String history = cityHistory.isEmpty()
                 ? "История городов пуста."
-                : session.getCityHistory().stream()
+                : cityHistory.stream()
                 .map(CityHistory::getCity)
-                .reduce((a, b) -> a + "\n- " + b)
+                .reduce((a, b) -> a + "\n🌆 " + b)
                 .orElse("История городов пуста.🙉");
-
-        return MessageUtils.createMessage(session.getChatId(), "Последние города:\n- " + history);
+        return MessageUtils.createMessage(session.getChatId(), "Последние города:\n🌆 " + history);
     }
 
     public SendMessage handleCity(UserSession session, String city) {

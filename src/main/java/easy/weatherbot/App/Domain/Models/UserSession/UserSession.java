@@ -16,12 +16,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class UserSession {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false, unique = true)
     private Long chatId;
 
@@ -31,11 +27,4 @@ public class UserSession {
 
     @OneToMany(mappedBy = "userSession", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CityHistory> cityHistory = new LinkedList<>();
-
-    public void addCityToHistory(String city) {
-        if (cityHistory.size() >= 5) {
-            cityHistory.remove(0);
-        }
-        cityHistory.add(new CityHistory(this, city));
-    }
 }

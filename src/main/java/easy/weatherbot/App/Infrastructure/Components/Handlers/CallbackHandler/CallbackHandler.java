@@ -1,6 +1,5 @@
-package easy.weatherbot.App.Infrastructure.Components.Processors.CallbackProcessor;
+package easy.weatherbot.App.Infrastructure.Components.Handlers.CallbackHandler;
 
-import easy.weatherbot.App.Infrastructure.Components.Keyboard.KeyboardUtils.KeyboardUtils;
 import easy.weatherbot.App.Infrastructure.Components.MessageUtil.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Slf4j
 @Component
-public class CallbackProcessor {
+public class CallbackHandler {
 
     @Transactional
     public SendMessage processCallback(CallbackQuery callbackQuery) {

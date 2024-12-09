@@ -1,4 +1,4 @@
-package easy.weatherbot.App.Infrastructure.Components.Processors.CommandProcessor;
+package easy.weatherbot.App.Infrastructure.Components.Handlers.CommandHandler;
 
 import easy.weatherbot.App.Domain.Models.State.UserState;
 import easy.weatherbot.App.Domain.Models.UserSession.UserSession;
@@ -6,6 +6,7 @@ import easy.weatherbot.App.Domain.Services.SessionService.SessionService;
 import easy.weatherbot.App.Infrastructure.Components.Commands.MenuCommands.MenuCommands;
 import easy.weatherbot.App.Infrastructure.Components.Commands.WeatherCommands.WeatherCommands;
 import easy.weatherbot.App.Infrastructure.Components.MessageUtil.MessageUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,17 +15,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Slf4j
 @Component
-public class CommandProcessor {
+@RequiredArgsConstructor
+public class CommandHandler {
     private final MenuCommands menuCommands;
     private final WeatherCommands weatherCommands;
     private final SessionService sessionService;
-
-    @Autowired
-    public CommandProcessor(MenuCommands menuCommands, WeatherCommands weatherCommands, SessionService sessionService) {
-        this.menuCommands = menuCommands;
-        this.weatherCommands = weatherCommands;
-        this.sessionService = sessionService;
-    }
 
     @Transactional
     public SendMessage processCommand(String command, Long chatId) {
@@ -46,6 +41,7 @@ public class CommandProcessor {
             case "/weather" -> weatherCommands.handleWeather(session);
             case "/history" -> weatherCommands.handleHistory(session);
             case "отмена", "/cancel" -> menuCommands.handleCancel(session);
+            case "/help" -> menuCommands.handleHelp(session);
             default -> handleUnknown(session);
         };
     }

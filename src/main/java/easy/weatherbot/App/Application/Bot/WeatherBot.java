@@ -1,7 +1,7 @@
 package easy.weatherbot.App.Application.Bot;
 
 import easy.weatherbot.App.Infrastructure.Components.BotCommands;
-import easy.weatherbot.App.Infrastructure.Components.Processors.MessageProcessor.MessageProcessor;
+import easy.weatherbot.App.Infrastructure.Components.Handlers.MessageHandler.MessageHandler;
 import easy.weatherbot.App.Infrastructure.Config.BotConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class WeatherBot extends TelegramLongPollingBot implements BotCommands {
     private final BotConfig config;
-    private final MessageProcessor messageProcessor;
+    private final MessageHandler messageHandler;
 
-    public WeatherBot(BotConfig config, MessageProcessor messageProcessor) {
+    public WeatherBot(BotConfig config, MessageHandler messageHandler) {
         this.config = config;
-        this.messageProcessor = messageProcessor;
+        this.messageHandler = messageHandler;
         setCommands();
     }
 
@@ -37,7 +37,7 @@ public class WeatherBot extends TelegramLongPollingBot implements BotCommands {
         try {
             if (update == null) return;
 
-            SendMessage response = messageProcessor.processUpdate(update);
+            SendMessage response = messageHandler.processUpdate(update);
             if (response != null) {
                 execute(response);
             }

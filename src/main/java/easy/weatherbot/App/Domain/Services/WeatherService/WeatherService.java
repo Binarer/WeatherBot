@@ -2,17 +2,16 @@ package easy.weatherbot.App.Domain.Services.WeatherService;
 
 import easy.weatherbot.App.Domain.Models.Weather.WeatherResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@RequiredArgsConstructor
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class WeatherService {
-    private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
     private final RestTemplate restTemplate;
 
     @Value("${weather.api.key}")
@@ -31,7 +30,7 @@ public class WeatherService {
                     .build()
                     .toUriString();
 
-            logger.info("Запрос погоды для города: {}", city);
+            log.info("Запрос погоды для города: {}", city);
             WeatherResponse response = restTemplate.getForObject(url, WeatherResponse.class);
 
             if (isValidWeatherResponse(response)) {
@@ -45,10 +44,10 @@ public class WeatherService {
                         temperature, emoji, description
                 );
             }
-            logger.warn("Город не найден или данные недоступны: {}", city);
+            log.warn("Город не найден или данные недоступны: {}", city);
             return null;
         } catch (Exception e) {
-            logger.error("Ошибка при запросе данных о погоде: {}", e.getMessage());
+            log.error("Ошибка при запросе данных о погоде: {}", e.getMessage());
             return "Ошибка при получении данных о погоде. Проверьте название города.";
         }
     }
